@@ -5,9 +5,11 @@
 #ifndef assistant_IPC_CLIENT_H
 #define assistant_IPC_CLIENT_H
 
+#include "../common/ipc-base.h"
 
 
-class IpcClient {
+class IpcClient : public IpcBase
+{
 
 };
 
