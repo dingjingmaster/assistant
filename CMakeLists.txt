@@ -25,9 +25,10 @@ include_directories(${CMAKE_SOURCE_DIR})
 find_package (PkgConfig)
 find_package(Qt5 COMPONENTS Core Gui Widgets Network REQUIRED)
 
+pkg_check_modules(X REQUIRED x11)
 pkg_check_modules(GIO REQUIRED gio-2.0)
 pkg_check_modules(QT_CORE REQUIRED Qt5Core)
-pkg_check_modules(QT REQUIRED Qt5Core Qt5Gui Qt5Network Qt5Widgets)
+pkg_check_modules(QT REQUIRED Qt5Core Qt5Gui Qt5Network Qt5Widgets Qt5X11Extras)
 
 message(STATUS "Qt core include     : ${QT_CORE_INCLUDE_DIRS}")
 message(STATUS "Qt core libraries   : ${QT_CORE_LIBRARIES}")

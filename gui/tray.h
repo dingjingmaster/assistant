@@ -4,9 +4,11 @@
 
 #ifndef assistant_TRAY_H
 #define assistant_TRAY_H
+#include <QClipboard>
 #include <QSystemTrayIcon>
+#include "3thrd/hotkey/qhotkey.h"
 
-
+class TrayPrivate;
 class Tray : public QSystemTrayIcon
 {
     Q_OBJECT
@@ -15,7 +17,14 @@ public:
 
     void online();
     void offline();
+
+public Q_SLOTS:
+    void handleHotkey();
+    void showToolTip(const QString& message);
+
 private:
+    TrayPrivate*                            d_ptr;
+    Q_DECLARE_PRIVATE(Tray);
 };
 
 

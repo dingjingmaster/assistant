@@ -10,7 +10,7 @@
 #include "3thrd/singleton/singleton-app-gui.h"
 
 
-class Daemon : public SingletonApp
+class Daemon final : public SingletonApp
 {
     Q_OBJECT
 public:
@@ -18,7 +18,7 @@ public:
 
     void run();
 private:
-    Tray*                               mTray;
+    Tray*                       mTray = nullptr;
 };
 
 
