@@ -11,5 +11,6 @@
 
 #define ASSISTANT_SOCKET_GUI                                     "/tmp/assistant_gui.sock"
 #define ASSISTANT_SOCKET_SERVICE                                 "/tmp/assistant_socket.sock"
+#define ASSISTANT_SOCKET_TRANSLATOR                              "/tmp/assistant-translator.sock"
 
 #endif

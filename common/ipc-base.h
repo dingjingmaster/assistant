@@ -7,17 +7,7 @@
 #include <QObject>
 #include <gio/gio.h>
 
-#include "3thrd/macros/macros.h"
-
-/**
- * @brief 通信所使用的消息结构
- */
-struct __attribute__((packed)) IpcMessage
-{
-    unsigned int        type;
-    unsigned long       dataLen;
-    char                data[];
-};
+#include "ipc.h"
 
 class IpcBase;
 class IpcBasePrivate;
@@ -48,6 +38,8 @@ public:
     int sendToClientWaitRespInt(cuint32 type, int data);
     int sendToClientWaitRespInt(cuint32 type, const QString& data);
     int sendToClientWaitRespInt(cuint32 type, const char* data, int dataLen);
+
+    static QByteArray sendAndWaitResp(const QString& ipcPath, cuint32 type, const QByteArray& data, bool isWaitResp);
 
 private:
     IpcBasePrivate*         d_ptr;

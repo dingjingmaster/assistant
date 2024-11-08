@@ -13,6 +13,8 @@
 
 #include "daemon.h"
 #include "tip-dialog.h"
+#include "common/defines.h"
+#include "common/ipc-base.h"
 #include "3thrd/hotkey/qhotkey.h"
 
 
@@ -87,6 +89,9 @@ void Tray::handleQuit()
 void Tray::handleTranslation()
 {
     Q_D(Tray);
+
+    QByteArray resp = IpcBase::sendAndWaitResp(ASSISTANT_SOCKET_TRANSLATOR, IPC_TYPE_TRANSLATOR, "aaa", true);
+    qInfo() << resp;
 
     d->mTipDialog->show();
 }

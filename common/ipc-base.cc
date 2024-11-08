@@ -26,7 +26,7 @@ class IpcBasePrivate
     friend class IpcBase;
     friend gboolean new_request (GSocketService* ls, GSocketConnection* conn, GObject* srcObj, gpointer uData);
 public:
-    explicit IpcBasePrivate(QString  listenerPath, QString  sendToPath, IpcBase* parent);
+    explicit IpcBasePrivate(QString listenerPath, QString  sendToPath, IpcBase* parent);
 
     void initListener();
     IpcClientProcess getClientProcess(cuint32 type);
@@ -352,6 +352,67 @@ int IpcBase::sendToClientWaitRespInt(cuint32 type, const char * data, int dataLe
     memcpy(&respInt, resp.data(), sizeof(respInt));
 
     return respInt;
+}
+
+QByteArray IpcBase::sendAndWaitResp(const QString & ipcPath, cuint32 type, const QByteArray & data, bool isWaitResp)
+{
+    GError* error = nullptr;
+
+    IpcMessage msg;
+    msg.type = type;
+    msg.dataLen = data.size();
+
+    QByteArray sendBuf;
+    sendBuf.append((char*)&msg, sizeof(msg));
+    sendBuf.append(data);
+
+    QByteArray resp;
+
+    do {
+        struct sockaddr_un addrT{};
+        addrT.sun_family = AF_LOCAL;
+        strncpy (addrT.sun_path, ipcPath.toUtf8().constData(), sizeof(addrT.sun_path) - 1);
+
+        GSocketAddress* addr = g_socket_address_new_from_native(&addrT, sizeof (addrT));
+        if (addr) {
+            GSocket* sock = g_socket_new (G_SOCKET_FAMILY_UNIX, G_SOCKET_TYPE_STREAM, G_SOCKET_PROTOCOL_DEFAULT, &error);
+            if (sock) {
+                if (g_socket_connect(sock, addr, nullptr, &error)) {
+                    if (g_socket_condition_wait(sock, G_IO_OUT, nullptr, &error)) {
+                        if (g_socket_send_with_blocking(sock, sendBuf.data(), sendBuf.size(), true, nullptr, &error)) {
+                            qDebug() << "send data to client OK!";
+                            if (isWaitResp) {
+                                if (g_socket_condition_wait(sock, G_IO_IN, nullptr, &error)) {
+                                    read_all_data(sock, resp);
+                                }
+                                else {
+                                    qWarning() << "g_socket_condition_wait error: " << (error ? error->message : "");
+                                }
+                            }
+                        }
+                        else {
+                            qWarning() << "sendDataToClient error: " << error->message;
+                        }
+                    }
+                    else {
+                        qWarning() << "g_socket_condition_wait error: " << error->message;
+                    }
+                }
+                else {
+                    qWarning() << "g_socket_connect error: " << error->message;
+                }
+                g_object_unref(sock);
+            }
+            else {
+                qWarning() << "g_socket_new error: " << error->message;
+            }
+            g_object_unref(addr);
+        }
+    } while (false);
+
+    if (error) { g_error_free(error); }
+
+    return resp;
 }
 
 static gboolean new_request (GSocketService* ls, GSocketConnection* conn, GObject* srcObj, gpointer uData)
