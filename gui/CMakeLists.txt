@@ -11,6 +11,7 @@ add_executable(assistant-gui
         main.cc
         tray.cc tray.h
         daemon.cc daemon.h
+        tip-dialog.cc tip-dialog.h
 
         ${GUI_SRC}
         ${HOTKEY_SRC}

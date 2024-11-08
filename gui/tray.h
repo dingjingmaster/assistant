@@ -9,7 +9,7 @@
 #include "3thrd/hotkey/qhotkey.h"
 
 class TrayPrivate;
-class Tray : public QSystemTrayIcon
+class Tray final : public QSystemTrayIcon
 {
     Q_OBJECT
 public:
@@ -19,7 +19,8 @@ public:
     void offline();
 
 public Q_SLOTS:
-    void handleHotkey();
+    void handleQuit();
+    void handleTranslation();
     void showToolTip(const QString& message);
 
 private:

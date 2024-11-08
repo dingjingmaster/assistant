@@ -6,11 +6,13 @@
 
 #include <QRegExp>
 #include <QClipboard>
+#include <qdatetime.h>
 #include <QKeySequence>
 #include <sys/socket.h>
 #include <QGuiApplication>
 
 #include "daemon.h"
+#include "tip-dialog.h"
 #include "3thrd/hotkey/qhotkey.h"
 
 
@@ -19,28 +21,17 @@ class TrayPrivate
 public:
     explicit TrayPrivate(Tray* tray);
 
-    bool checkCurrentDataIsEnglish();
-
 private:
     Tray*                       q_ptr;
+    TipDialog*                  mTipDialog;
     QString                     mCurrentData;
     Q_DECLARE_PUBLIC(Tray);
 };
 
 TrayPrivate::TrayPrivate(Tray * tray)
-    : q_ptr(tray)
+    : q_ptr(tray), mTipDialog(new TipDialog(nullptr)), mCurrentData("")
 {
-}
 
-bool TrayPrivate::checkCurrentDataIsEnglish()
-{
-    static QRegExp regExp("[!@#$%^&*()_+-=,./;'[]\\{}|:\"<>?0-9a-zA-Z\r\n]?");
-
-    if (regExp.exactMatch(mCurrentData.left(100))) {
-        return true;
-    }
-
-    return false;
 }
 
 Tray::Tray(QObject* parent)
@@ -67,7 +58,8 @@ Tray::Tray(QObject* parent)
         }
     });
 
-    connect(new QHotkey(QKeySequence("Ctrl+q"), true, this), &QHotkey::activated, this, &Tray::handleHotkey);
+    connect(new QHotkey(QKeySequence("Ctrl+q"), true, this), &QHotkey::activated, this, &Tray::handleQuit);
+    connect(new QHotkey(QKeySequence("Ctrl+t"), true, this), &QHotkey::activated, this, &Tray::handleTranslation);
 
     online();
 }
@@ -82,18 +74,21 @@ void Tray::offline()
     setIcon(QIcon(":/offline.svg"));
 }
 
-void Tray::handleHotkey()
+void Tray::handleQuit()
 {
     Q_D(Tray);
 
-    if (d->checkCurrentDataIsEnglish()) {
-        // 英文则翻译
-        QString tip = QString("%1\n\n%2").arg(d->mCurrentData).arg(d->mCurrentData);
-        showToolTip(tip);
-        return;
+    if (d->mTipDialog->isVisible()) {
+        d->mTipDialog->setVisible(false);
     }
+}
 
-    showToolTip(d->mCurrentData);
+
+void Tray::handleTranslation()
+{
+    Q_D(Tray);
+
+    d->mTipDialog->show();
 }
 
 void Tray::showToolTip(const QString & message)

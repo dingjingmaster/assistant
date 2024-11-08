@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "model"
+version = "0.1.0"
+description = ""
+authors = ["dingjing <dingjing@live.cn>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+transformers = "^4.46.2"
+torch = "^2.5.1"
+sentencepiece = "^0.2.0"
+sacremoses = "^0.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
