@@ -1,13 +1,15 @@
 import sys
-import server
+from Translator import Translator
+from Server import UnixSocketServer, IPC_SOCKET_PATH, RequestHandler
 
 if __name__ == '__main__':
-    # if len(sys.argv) != 2:
-    #     sys.exit(-1)
+    if len(sys.argv) != 2:
+        sys.exit(-1)
 
-    # baseDir = sys.argv[1]
+    modelBaseDir = sys.argv[1]
+    Translator.setModelBaseDir(modelBaseDir)
 
-    with server.UnixSocketServer(server.IPC_SOCKET_PATH, server.RequestHandler) as server:
+    with UnixSocketServer(IPC_SOCKET_PATH, RequestHandler) as server:
         server.serve_forever()
     exit(0)
 

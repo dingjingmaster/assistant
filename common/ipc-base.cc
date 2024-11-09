@@ -366,6 +366,26 @@ QByteArray IpcBase::sendAndWaitResp(const QString & ipcPath, cuint32 type, const
     sendBuf.append((char*)&msg, sizeof(msg));
     sendBuf.append(data);
 
+    QByteArray resp = sendRawAndWaitResp(ipcPath, sendBuf, isWaitResp);
+
+    if (!resp.isEmpty()) {
+        IpcMessage* respMsg = (IpcMessage*) resp.data();
+        QByteArray bufT(respMsg->data, (int) respMsg->dataLen);
+        resp = bufT;
+    }
+
+    if (error) { g_error_free(error); }
+
+    return resp;
+}
+
+QByteArray IpcBase::sendRawAndWaitResp(const QString & ipcPath, const QByteArray & data, bool isWaitResp)
+{
+    GError* error = nullptr;
+
+    QByteArray sendBuf;
+    sendBuf.append(data);
+
     QByteArray resp;
 
     do {

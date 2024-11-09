@@ -40,6 +40,7 @@ public:
     int sendToClientWaitRespInt(cuint32 type, const char* data, int dataLen);
 
     static QByteArray sendAndWaitResp(const QString& ipcPath, cuint32 type, const QByteArray& data, bool isWaitResp);
+    static QByteArray sendRawAndWaitResp(const QString& ipcPath, const QByteArray& data, bool isWaitResp);
 
 private:
     IpcBasePrivate*         d_ptr;

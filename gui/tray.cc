@@ -90,8 +90,13 @@ void Tray::handleTranslation()
 {
     Q_D(Tray);
 
-    QByteArray resp = IpcBase::sendAndWaitResp(ASSISTANT_SOCKET_TRANSLATOR, IPC_TYPE_TRANSLATOR, "aaa", true);
-    qInfo() << resp;
+    if (d->mTipDialog->isVisible()) {
+        d->mTipDialog->setVisible(false);
+    }
+
+    d->mTipDialog->setSrcLabel(d->mCurrentData);
+    const QByteArray resp = IpcBase::sendRawAndWaitResp(ASSISTANT_SOCKET_TRANSLATOR, d->mCurrentData.toUtf8(), true);
+    d->mTipDialog->setDstLabel(resp);
 
     d->mTipDialog->show();
 }
