@@ -17,6 +17,9 @@ public:
     void setSrcLabel(const QString& label);
     void setDstLabel(const QString& label);
 
+protected:
+    void focusOutEvent(QFocusEvent * event) override;
+
 private:
     QLayout*                    mMainLayout;
     QLabel*                     mSrcLabel;

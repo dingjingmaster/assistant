@@ -51,6 +51,7 @@ class RequestHandler(socketserver.BaseRequestHandler):
 class UnixSocketServer(socketserver.ThreadingMixIn, socketserver.UnixStreamServer):
     def __init__(self, addr, RequestHandlerClass):
         super().__init__(addr, RequestHandlerClass)
+        os.chmod(IPC_SOCKET_PATH, 0o777)
         # 创建线程池
         self.executor = ThreadPoolExecutor(100)
 

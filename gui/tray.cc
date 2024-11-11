@@ -91,7 +91,7 @@ void Tray::handleTranslation()
     Q_D(Tray);
 
     if (d->mTipDialog->isVisible()) {
-        d->mTipDialog->setVisible(false);
+        d->mTipDialog->close();
     }
 
     d->mTipDialog->setSrcLabel(d->mCurrentData);

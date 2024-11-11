@@ -15,6 +15,7 @@ TipDialog::TipDialog(QWidget * parent)
 {
     setContentsMargins(8, 8, 8, 8);
 
+    setFocusPolicy(Qt::ClickFocus);
     setMaximumSize(QSize(1024, 768));
     setWindowFlags(Qt::FramelessWindowHint);
 
@@ -54,4 +55,11 @@ void TipDialog::setSrcLabel(const QString & label)
 void TipDialog::setDstLabel(const QString & label)
 {
     mDstLabel->setText(label);
+}
+
+void TipDialog::focusOutEvent(QFocusEvent * event)
+{
+    if (isVisible()) {
+        hide();
+    }
 }
