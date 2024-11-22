@@ -42,4 +42,5 @@ add_subdirectory(service)
 
 install(TARGETS assistant-gui DESTINATION /usr/local/assistant/bin/)
 install(FILES ${CMAKE_SOURCE_DIR}/data/assistant.svg DESTINATION /usr/local/assistant/data/)
-install(FILES ${CMAKE_SOURCE_DIR}/data/assistant-gui.desktop DESTINATION /etc/xdg/autostart/)
+#install(FILES ${CMAKE_SOURCE_DIR}/data/assistant-gui.desktop DESTINATION /etc/xdg/autostart/)
+install(FILES ${CMAKE_SOURCE_DIR}/data/assistant-gui.service DESTINATION /etc/systemd/user/)

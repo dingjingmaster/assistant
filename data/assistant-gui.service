@@ -1,0 +1,10 @@
+[Unit]
+Description=Translate assistant
+
+[Service]
+Type=simple
+ExecStart=/usr/local/assistant/bin/assistant-gui > /dev/null 2>&1
+Restart=always
+
+[Install]
+WantedBy=defult.target
