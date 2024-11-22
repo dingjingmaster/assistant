@@ -90,12 +90,21 @@ void Tray::handleTranslation()
 {
     Q_D(Tray);
 
+    if (d->mCurrentData.isEmpty()) {
+        return;
+    }
+
     if (d->mTipDialog->isVisible()) {
         d->mTipDialog->close();
     }
 
-    d->mTipDialog->setSrcLabel(d->mCurrentData);
     const QByteArray resp = IpcBase::sendRawAndWaitResp(ASSISTANT_SOCKET_TRANSLATOR, d->mCurrentData.toUtf8(), true);
+
+    if (d->mCurrentData.isEmpty() || resp.isEmpty()) {
+        return;
+    }
+
+    d->mTipDialog->setSrcLabel(d->mCurrentData);
     d->mTipDialog->setDstLabel(resp);
 
     d->mTipDialog->show();
