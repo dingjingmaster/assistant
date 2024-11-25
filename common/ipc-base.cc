@@ -10,12 +10,14 @@
 #include <utility>
 
 #include <glib.h>
+#include <qeventloop.h>
+#include <QThread>
+#include <QTimer>
 #include <sys/un.h>
 #include <gio/gio.h>
 #include <sys/socket.h>
 
 #include "3thrd/macros/macros.h"
-
 
 static gsize    read_all_data               (GSocket* fr, QByteArray& C_OUT);
 static void     process_client_request      (gpointer data, gpointer userData);
@@ -402,6 +404,16 @@ QByteArray IpcBase::sendRawAndWaitResp(const QString & ipcPath, const QByteArray
                         if (g_socket_send_with_blocking(sock, sendBuf.data(), sendBuf.size(), true, nullptr, &error)) {
                             qDebug() << "send data to client OK!";
                             if (isWaitResp) {
+                                QEventLoop eventLoop;
+                                QTimer timer;
+                                timer.setInterval(100);
+                                timer.connect(&timer, &QTimer::timeout, [&]() ->void {
+                                    if (g_socket_condition_timed_wait(sock, G_IO_IN, 100, nullptr, &error)) {
+                                        eventLoop.quit();
+                                    }
+                                });
+                                timer.start();
+                                eventLoop.exec();
                                 if (g_socket_condition_wait(sock, G_IO_IN, nullptr, &error)) {
                                     read_all_data(sock, resp);
                                 }
