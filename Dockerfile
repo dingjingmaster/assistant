@@ -4,7 +4,10 @@ LABEL author="dingjing" email="dingjing@live.cn"
 VOLUME ["/tmp"]
 
 RUN     apt-get update \
-    &&  apt-get install python3-poetry -y
+    &&  apt-get install python3-poetry -y \
+    && apt-get autoremove -y \
+    && rm -rf /usr/share/doc /usr/share/man \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY model /usr/local/assistant/model
 

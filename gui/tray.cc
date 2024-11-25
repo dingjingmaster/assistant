@@ -91,6 +91,7 @@ void Tray::handleTranslation()
     Q_D(Tray);
 
     if (d->mCurrentData.isEmpty()) {
+        showToolTip(tr("No English string is selected"));
         return;
     }
 
@@ -98,16 +99,19 @@ void Tray::handleTranslation()
         d->mTipDialog->close();
     }
 
+    d->mTipDialog->setSrcLabel(d->mCurrentData);
+    d->mTipDialog->show();
+    d->mTipDialog->setDstLabel(tr("Translating string, please wait ..."));
+
     const QByteArray resp = IpcBase::sendRawAndWaitResp(ASSISTANT_SOCKET_TRANSLATOR, d->mCurrentData.toUtf8(), true);
 
-    if (d->mCurrentData.isEmpty() || resp.isEmpty()) {
+    if (resp.isEmpty()) {
+        d->mTipDialog->close();
+        showToolTip(tr("NO response string."));
         return;
     }
 
-    d->mTipDialog->setSrcLabel(d->mCurrentData);
     d->mTipDialog->setDstLabel(resp);
-
-    d->mTipDialog->show();
 }
 
 void Tray::showToolTip(const QString & message)

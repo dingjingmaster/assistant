@@ -38,7 +38,7 @@ class Translator:
             input = 'translate to zh: ' + englishStr
             inputs = self._tokenizer(input, return_tensors='pt')
             outputs = self._EnglishToChineseModel.generate(**inputs.to('cpu'))
-            output = self._tokenizer.batch_decode(outputs[0], skip_special_tokens=True)
+            output = self._tokenizer.batch_decode(outputs, skip_special_tokens=True)[0]
         except Exception as e:
             #print(e)
             pass
