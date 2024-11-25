@@ -6,7 +6,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 from Translator import translatorInstance
 from ipc import IpcMessagesParser
-from model.ipc import IpcMessagesPacker
 
 IPC_TYPE_TRANSLATOR                     = 1
 

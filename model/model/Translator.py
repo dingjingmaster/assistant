@@ -1,6 +1,7 @@
 import torch
 import threading
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+#from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 class Translator:
     _instance = None
@@ -20,9 +21,13 @@ class Translator:
         return cls._instance
 
     def __init__(self):
+        #AutoModelForSeq2SeqLM.from_pretrained(Translator._modelBaseDir)
+        self._EnglishToChineseModel = T5ForConditionalGeneration.from_pretrained(Translator._modelBaseDir)
+        self._EnglishToChineseModel.eval()
+        self._EnglishToChineseModel.to('cpu')
         # 加载分词器和模型
-        self._tokenizer = AutoTokenizer.from_pretrained(Translator._modelBaseDir)
-        self._EnglishToChineseModel = AutoModelForSeq2SeqLM.from_pretrained(Translator._modelBaseDir)
+        #AutoTokenizer.from_pretrained(Translator._modelBaseDir)
+        self._tokenizer = T5Tokenizer.from_pretrained(Translator._modelBaseDir)
 
     '''
     @brief 中英文翻译
@@ -30,11 +35,12 @@ class Translator:
     def englishToChinese(self, englishStr: str) ->str :
         output = ''
         try:
-            inputs = self._tokenizer(englishStr, return_tensors='pt')
-            outputs = self._EnglishToChineseModel.generate(**inputs)
-            output = self._tokenizer.decode(outputs[0], skip_special_tokens=True)
+            input = 'translate to zh: ' + englishStr
+            inputs = self._tokenizer(input, return_tensors='pt')
+            outputs = self._EnglishToChineseModel.generate(**inputs.to('cpu'))
+            output = self._tokenizer.batch_decode(outputs[0], skip_special_tokens=True)
         except Exception as e:
-            print(e)
+            #print(e)
             pass
         return output
 
