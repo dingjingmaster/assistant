@@ -7,4 +7,4 @@ ExecStart=/usr/local/assistant/bin/assistant-gui > /dev/null 2>&1
 Restart=always
 
 [Install]
-WantedBy=defult.target
+WantedBy=default.target
