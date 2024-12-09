@@ -18,6 +18,7 @@ TipDialog::TipDialog(QWidget * parent)
     setFocusPolicy(Qt::ClickFocus);
     setMaximumSize(QSize(1024, 768));
     setWindowFlags(Qt::FramelessWindowHint);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     mMainLayout = new QVBoxLayout;
     mMainLayout->setContentsMargins(0, 0, 0, 0);
@@ -34,6 +35,7 @@ TipDialog::TipDialog(QWidget * parent)
     auto vLayout2 = new QVBoxLayout;
     auto title2 = new QLabel(tr("译文"));
     mDstLabel = new QLabel;
+    mDstLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     mDstLabel->setWordWrap(true);
 
     vLayout2->addWidget(title2);
@@ -55,6 +57,8 @@ void TipDialog::setSrcLabel(const QString & label)
 void TipDialog::setDstLabel(const QString & label)
 {
     mDstLabel->setText(label);
+    mDstLabel->adjustSize();
+    adjustSize();
 }
 
 void TipDialog::focusOutEvent(QFocusEvent * event)
